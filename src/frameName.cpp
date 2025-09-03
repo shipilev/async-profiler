@@ -138,9 +138,16 @@ const char* FrameName::typeSuffix(FrameTypeId type) {
     if (_style & STYLE_ANNOTATE) {
         switch (type) {
             case FRAME_INTERPRETED:  return "_[0]";
-            case FRAME_JIT_COMPILED: return "_[j]";
+            case FRAME_JIT_LEVEL1:   return "_[1]";
+            case FRAME_JIT_LEVEL2:   return "_[2]";
+            case FRAME_JIT_LEVEL3:   return "_[3]";
+            case FRAME_JIT_LEVEL4:   return "_[4]";
+            case FRAME_AOT_LEVEL1:   return "_[a]";
+            case FRAME_AOT_LEVEL2:   return "_[b]";
+            case FRAME_AOT_LEVEL3:   return "_[c]";
+            case FRAME_AOT_LEVEL4:   return "_[d]";
+            case FRAME_AOT_PRELOAD:  return "_[p]";
             case FRAME_INLINED:      return "_[i]";
-            case FRAME_C1_COMPILED:  return "_[1]";
             default:                 return NULL;
         }
     }

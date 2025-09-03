@@ -12,8 +12,16 @@
 
 enum FrameTypeId {
     FRAME_INTERPRETED  = 0,
-    FRAME_JIT_COMPILED = 1,
-    FRAME_INLINED      = 2,
+    FRAME_JIT_LEVEL1   = 1,
+    FRAME_JIT_LEVEL2   = 2,
+    FRAME_JIT_LEVEL3   = 3,
+    FRAME_JIT_LEVEL4   = 4,
+    FRAME_AOT_LEVEL1   = 5,
+    FRAME_AOT_LEVEL2   = 6,
+    FRAME_AOT_LEVEL3   = 7,
+    FRAME_AOT_LEVEL4   = 8,
+    FRAME_AOT_PRELOAD  = 9,
+    FRAME_INLINED      = 10,
     // The distinction between FRAME_NATIVE and FRAME_CPP is for visual purposes
     // to make differentiating between libc and application code easier, which
     // means that C and asm code is FRAME_NATIVE and Rust/Objective-C code is of
@@ -21,11 +29,30 @@ enum FrameTypeId {
     //
     // There probably should be a better way of doing this distinction, but it
     // works well enough in practice.
-    FRAME_NATIVE       = 3,
-    FRAME_CPP          = 4,
-    FRAME_KERNEL       = 5,
-    FRAME_C1_COMPILED  = 6,
+    FRAME_NATIVE       = 11,
+    FRAME_CPP          = 12,
+    FRAME_KERNEL       = 13
 };
+
+FrameTypeId frame_type_id(bool isAOT, bool isAOTPreload, int level) {
+    if (isAOT) {
+      if (isAOTPreload) return FRAME_AOT_PRELOAD;
+      switch(level) {
+        case 1: return FRAME_AOT_LEVEL1;
+        case 2: return FRAME_AOT_LEVEL2;
+        case 3: return FRAME_AOT_LEVEL3;
+        case 4: return FRAME_AOT_LEVEL4;
+      }
+    } else {
+      switch(level) {
+        case 1: return FRAME_JIT_LEVEL1;
+        case 2: return FRAME_JIT_LEVEL2;
+        case 3: return FRAME_JIT_LEVEL3;
+        case 4: return FRAME_JIT_LEVEL4;
+      }
+    }
+    return FRAME_NATIVE;
+}
 
 class FrameType {
   public:
@@ -34,7 +61,7 @@ class FrameType {
     }
 
     static inline FrameTypeId decode(int bci) {
-        return (bci >> 24) > 0 ? (FrameTypeId)(bci >> 25) : FRAME_JIT_COMPILED;
+        return (bci >> 24) > 0 ? (FrameTypeId)(bci >> 25) : FRAME_JIT_LEVEL4;
     }
 };
 

@@ -51,19 +51,32 @@
 	if (devicePixelRatio) c.scale(devicePixelRatio, devicePixelRatio);
 	c.font = document.body.style.font;
 
+    /*
+    public static final byte TYPE_INTERPRETED = 0;
+    public static final byte TYPE_JIT_COMPILED = 1;
+    public static final byte TYPE_INLINED = 2;
+    public static final byte TYPE_NATIVE = 3;
+    public static final byte TYPE_CPP = 4;
+    public static final byte TYPE_KERNEL = 5;
+    public static final byte TYPE_C1_COMPILED = 6;
+    public static final byte TYPE_AOT_COMPILED = 7;
+     */
+
 	const palette = [
-		[0xb2e1b2, 20, 20, 20],
-		[0x50e150, 30, 30, 30],
-		[0x50cccc, 30, 30, 30],
-		[0xe15a5a, 30, 40, 40],
-		[0xc8c83c, 30, 30, 10],
-		[0xe17d00, 30, 30,  0],
-		[0xcce880, 20, 20, 20],
+		['#df4a00', 0, 0, 0], // Interpreted
+		['#50dae1', 0, 0, 0], // C2
+		['#aeddaf', 0, 0, 0], // Inlined
+		['#e15a5a', 0, 0, 0], // Native
+		['#c8c83c', 0, 0, 0], // C++
+		['#e17d00', 0, 0, 0], // Kernel
+		['#e7e729', 0, 0, 0], // C1
+		['#50e150', 0, 0, 0], // AOT
 	];
 
 	function getColor(p) {
-		const v = Math.random();
-		return '#' + (p[0] + ((p[1] * v) << 16 | (p[2] * v) << 8 | (p[3] * v))).toString(16);
+        return p[0];
+		// const v = Math.random();
+		// return '#' + (p[0] + ((p[1] * v) << 16 | (p[2] * v) << 8 | (p[3] * v))).toString(16);
 	}
 
 	function f(key, level, left, width, inln, c1, int) {

@@ -870,14 +870,21 @@ class Recording {
 
     void writeFrameTypes(Buffer* buf) {
         buf->putVar32(T_FRAME_TYPE);
-        buf->putVar32(7);
+        buf->putVar32(14);
         buf->putVar32(FRAME_INTERPRETED);  buf->putUtf8("Interpreted");
-        buf->putVar32(FRAME_JIT_COMPILED); buf->putUtf8("JIT compiled");
+        buf->putVar32(FRAME_JIT_LEVEL1);   buf->putUtf8("JIT Level 1 (C1)");
+        buf->putVar32(FRAME_JIT_LEVEL2);   buf->putUtf8("JIT Level 2 (C1 limited profiling)");
+        buf->putVar32(FRAME_JIT_LEVEL3);   buf->putUtf8("JIT Level 3 (C1 full profiling)");
+        buf->putVar32(FRAME_JIT_LEVEL4);   buf->putUtf8("JIT Level 4 (C2)");
+        buf->putVar32(FRAME_AOT_LEVEL1);   buf->putUtf8("AOT Level 1 (C1)");
+        buf->putVar32(FRAME_AOT_LEVEL2);   buf->putUtf8("AOT Level 2 (C1 limited profiling)");
+        buf->putVar32(FRAME_AOT_LEVEL3);   buf->putUtf8("AOT Level 3 (C1 full profiling)");
+        buf->putVar32(FRAME_AOT_LEVEL4);   buf->putUtf8("AOT Level 4 (C2)");
+        buf->putVar32(FRAME_AOT_PRELOAD);  buf->putUtf8("AOT Level 4+ (C2 Preload)");
         buf->putVar32(FRAME_INLINED);      buf->putUtf8("Inlined");
         buf->putVar32(FRAME_NATIVE);       buf->putUtf8("Native");
         buf->putVar32(FRAME_CPP);          buf->putUtf8("C++");
         buf->putVar32(FRAME_KERNEL);       buf->putUtf8("Kernel");
-        buf->putVar32(FRAME_C1_COMPILED);  buf->putUtf8("C1 compiled");
     }
 
     void writeThreadStates(Buffer* buf) {

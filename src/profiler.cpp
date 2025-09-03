@@ -586,9 +586,10 @@ void Profiler::fillFrameTypes(ASGCT_CallFrame* frames, int num_frames, NMethod* 
             }
             if (frames[i].method_id == current_method_id) {
                 int level = nmethod->level();
-                frames[i].bci = FrameType::encode(level >= 1 && level <= 3 ? FRAME_C1_COMPILED : FRAME_JIT_COMPILED, frames[i].bci);
+                FrameTypeId id = frame_type_id(nmethod->isAOT(), nmethod->isAOTPreload(), level);
+                frames[i].bci = FrameType::encode(id, frames[i].bci);
                 for (int j = 0; j < i; j++) {
-                    frames[j].bci = FrameType::encode(FRAME_INLINED, frames[j].bci);
+                    frames[j].bci = FrameType::encode(id, frames[j].bci);
                 }
                 break;
             }

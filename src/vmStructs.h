@@ -65,6 +65,8 @@ class VMStructs {
     static int _nmethod_entry_offset;
     static int _nmethod_state_offset;
     static int _nmethod_level_offset;
+    static int _nmethod_aot_code_entry_offset;
+    static int _aot_for_preload_offset;
     static int _nmethod_metadata_offset;
     static int _nmethod_immutable_offset;
     static int _method_constmethod_offset;
@@ -541,6 +543,26 @@ class NMethod : VMStructs {
     int level() {
         return _nmethod_level_offset >= 0 ? *(signed char*) at(_nmethod_level_offset) : 0;
     }
+
+    bool isAOT() {
+        if (_nmethod_aot_code_entry_offset < 0) {
+            return false;
+        }
+        return (*(void**) at(_nmethod_aot_code_entry_offset) != NULL);
+    }
+
+    bool isAOTPreload() {
+        if (_nmethod_aot_code_entry_offset < 0 || _aot_for_preload_offset < 0) {
+            return false;
+        }
+        intptr_t v = *(intptr_t*)at(_nmethod_aot_code_entry_offset);
+	if (v == 0) {
+            return false;
+        }
+        //return true;
+        return *(bool*)(v + _aot_for_preload_offset);
+    }
+
 
     VMMethod** metadata() {
         if (_mutable_data_offset >= 0) {

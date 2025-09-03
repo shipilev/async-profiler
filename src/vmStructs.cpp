@@ -59,6 +59,8 @@ int VMStructs::_nmethod_method_offset = -1;
 int VMStructs::_nmethod_entry_offset = -1;
 int VMStructs::_nmethod_state_offset = -1;
 int VMStructs::_nmethod_level_offset = -1;
+int VMStructs::_nmethod_aot_code_entry_offset = -1;
+int VMStructs::_aot_for_preload_offset = -1;
 int VMStructs::_nmethod_metadata_offset = -1;
 int VMStructs::_nmethod_immutable_offset = -1;
 int VMStructs::_method_constmethod_offset = -1;
@@ -206,6 +208,8 @@ void VMStructs::initOffsets() {
                     _nmethod_state_offset = *(int*)(entry + offset_offset);
                 } else if (strcmp(field, "_comp_level") == 0) {
                     _nmethod_level_offset = *(int*)(entry + offset_offset);
+                } else if (strcmp(field, "_aot_code_entry") == 0) {
+                    _nmethod_aot_code_entry_offset = *(int*)(entry + offset_offset);
                 } else if (strcmp(field, "_metadata_offset") == 0) {
                     _nmethod_metadata_offset = *(int*)(entry + offset_offset);
                 } else if (strcmp(field, "_immutable_data") == 0) {
@@ -217,6 +221,10 @@ void VMStructs::initOffsets() {
                 } else if (strcmp(field, "_scopes_data_begin") == 0) {
                     _scopes_data_offset = - *(int*)(entry + offset_offset);
                 }
+            } else if (strcmp(type, "AOTCodeEntry") == 0) {
+                if (strcmp(field, "_for_preload") == 0) {
+                    _aot_for_preload_offset = *(int*)(entry + offset_offset);
+		}
             } else if (strcmp(type, "Method") == 0) {
                 if (strcmp(field, "_constMethod") == 0) {
                     _method_constmethod_offset = *(int*)(entry + offset_offset);

@@ -98,13 +98,22 @@ Trie* FlameGraph::addChild(Trie* f, const char* name, FrameTypeId type, u64 valu
 
     switch (type) {
         case FRAME_INLINED:
-            (f = f->child(name_index, FRAME_JIT_COMPILED))->_inlined += value;
+            (f = f->child(name_index, FRAME_JIT_LEVEL4))->_inlined += value;
             return f;
-        case FRAME_C1_COMPILED:
-            (f = f->child(name_index, FRAME_JIT_COMPILED))->_c1_compiled += value;
+        case FRAME_JIT_LEVEL1:
+        case FRAME_JIT_LEVEL2:
+        case FRAME_JIT_LEVEL3:
+        case FRAME_JIT_LEVEL4:
+            (f = f->child(name_index, FRAME_JIT_LEVEL4))->_c1_compiled += value;
+            return f;
+        case FRAME_AOT_LEVEL1:
+        case FRAME_AOT_LEVEL2:
+        case FRAME_AOT_LEVEL3:
+        case FRAME_AOT_LEVEL4:
+            (f = f->child(name_index, FRAME_JIT_LEVEL4))->_aot_compiled += value;
             return f;
         case FRAME_INTERPRETED:
-            (f = f->child(name_index, FRAME_JIT_COMPILED))->_interpreted += value;
+            (f = f->child(name_index, FRAME_JIT_LEVEL4))->_interpreted += value;
             return f;
         default:
             return f->child(name_index, type);

@@ -19,9 +19,9 @@ class Trie {
     std::map<u32, Trie*> _children;
     u64 _total;
     u64 _self;
-    u64 _inlined, _c1_compiled, _interpreted;
+    u64 _inlined, _c1_compiled, _interpreted, _aot_compiled;
 
-    Trie() : _children(), _total(0), _self(0), _inlined(0), _c1_compiled(0), _interpreted(0) {
+    Trie() : _children(), _total(0), _self(0), _inlined(0), _c1_compiled(0), _interpreted(0), _aot_compiled(0) {
     }
 
     ~Trie() {
@@ -34,7 +34,9 @@ class Trie {
         if (_inlined * 3 >= _total) {
             return FRAME_INLINED;
         } else if (_c1_compiled * 2 >= _total) {
-            return FRAME_C1_COMPILED;
+            return FRAME_JIT_LEVEL1;
+        } else if (_aot_compiled * 5 >= _total * 4) {
+            return FRAME_AOT_LEVEL4;
         } else if (_interpreted * 2 >= _total) {
             return FRAME_INTERPRETED;
         } else {

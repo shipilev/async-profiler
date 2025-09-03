@@ -298,7 +298,9 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
 
             if (nm->isNMethod()) {
                 int level = nm->level();
-                FrameTypeId type = details && level >= 1 && level <= 3 ? FRAME_C1_COMPILED : FRAME_JIT_COMPILED;
+                bool isAOT = nm->isAOT();
+                bool isAOTPreload = nm->isAOTPreload();
+		FrameTypeId type = frame_type_id(isAOT, isAOTPreload, level);
                 fillFrame(frames[depth++], type, 0, nm->method()->id());
 
                 if (nm->isFrameCompleteAt(pc)) {
@@ -313,8 +315,7 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
                         do {
                             scope_offset = scope.decode(scope_offset);
                             if (details) {
-                                type = scope_offset > 0 ? FRAME_INLINED :
-                                       level >= 1 && level <= 3 ? FRAME_C1_COMPILED : FRAME_JIT_COMPILED;
+                                type = frame_type_id(isAOT, isAOTPreload, level);
                             }
                             fillFrame(frames[depth++], type, scope.bci(), scope.method()->id());
                         } while (scope_offset > 0 && depth < max_depth);
@@ -436,7 +437,8 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
                     VMMethod* method = vm_thread->compiledMethod();
                     jmethodID method_id = method != NULL ? method->id() : NULL;
                     if (method_id != NULL) {
-                        fillFrame(frames[depth++], FRAME_JIT_COMPILED, 0, method_id);
+			FrameTypeId type = frame_type_id(false, false, 0);
+                        fillFrame(frames[depth++], type, 0, method_id);
                     }
                 }
             }
